@@ -121,10 +121,14 @@ router.post("/getuser", authUser, async (req, res) => {
 });
 
 //get all data
-router.get("/alluser", async (req, res) => {
+router.get("/allusers", authUser, async (req, res) => {
   try {
-    const allUsers = await UserSchema.find({});
-    res.status(200).send(allUsers);
+    const userId = req.existUser.id;
+    const allUsers = await UserSchema.find({}).select("-password");
+
+    const filteredUsers = allUsers.filter(user => user._id.toString() !== userId);
+
+    res.status(200).send(filteredUsers);
   } catch (error) {
     res.json(error);
   }
