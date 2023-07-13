@@ -77,11 +77,11 @@ router.put(
       let existTask = await TaskSchema.findById(req.params.id);
       //if no task exists at given id
       if (!existTask) {
-        return res.status(404).send("No task found");
+        return res.status(404).json("No task found");
       }
       //if user is unauthorized
       if (existTask.creator.toString() !== req.existUser.id) {
-        return res.status(401).send("Unauthorized");
+        return res.status(401).json("Unauthorized");
       }
       //create new task
       const updateTask = {};
@@ -110,11 +110,11 @@ router.delete("/deletetask/:id", authUser, async (req, res) => {
     let existTask = await TaskSchema.findById(req.params.id);
     //if no task exists at given id
     if (!existTask) {
-      return res.status(404).send("No task found");
+      return res.status(404).json("No task found");
     }
     //if user is unauthorized
     if (existTask.creator.toString() !== req.existUser.id) {
-      return res.status(401).send("Unauthorized");
+      return res.status(401).json("Unauthorized");
     }
     const deleteTask = await TaskSchema.findByIdAndDelete(req.params.id);
     res.status(200).json("Task deleted");
@@ -163,20 +163,21 @@ router.post(
       let existTask = await TaskSchema.findById(req.params.id);
       //if no task exists at given id
       if (!existTask) {
-        return res.status(404).send("No task found");
+        return res.status(404).json("No task found");
       }
       //if user is unauthorized
       if (existTask.creator.toString() !== req.existUser.id) {
-        return res.status(401).send("Unauthorized");
+        return res.status(401).json("Unauthorized");
       }
+      //if assignee not found
       const assignee = await UserSchema.findOne({ email: email });
       if (!assignee) {
-        res.status(404).json("No assignee found");
+        return res.status(404).json("No assignee found");
       }
       //if assigning task to yourself
       let assigneeId = await UserSchema.findOne({ _id: existTask.creator });
       if (assigneeId.email === email) {
-        return res.status(403).send("Can not assign task to yourself");
+        return res.status(403).json("Can not assign task to yourself");
       }
       //adding assignee id to array of assignees
       existTask = await TaskSchema.findByIdAndUpdate(
@@ -222,12 +223,12 @@ router.delete("/deleteassignee/:idt/:emaila", authUser, async (req, res) => {
 
     //if no task exists at given id
     if (!existTask) {
-      return res.status(404).send("No task found");
+      return res.status(404).json("No task found");
     }
 
     //if user is unauthorized
     if (existTask.creator.toString() !== req.existUser.id) {
-      return res.status(401).send("Unauthorized");
+      return res.status(401).json("Unauthorized");
     }
 
     // Find the assignee by their ID

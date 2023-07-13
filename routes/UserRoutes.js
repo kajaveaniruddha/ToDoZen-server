@@ -19,7 +19,6 @@ router.post(
     body("password", "atleast 5 characters").isLength({ min: 6 }),
   ],
   async (req, res) => {
-    let success=false;
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -54,8 +53,7 @@ router.post(
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
-      res.json(authtoken);
-      success=true;
+      res.status(200).json(authtoken);
       // res.status(200).json({success,errors:"user added successfully"});
 
     } catch (error) {
@@ -109,14 +107,14 @@ router.post(
 );
 
 //getuser data
-router.post("/getuser", authUser, async (req, res) => {
+router.get("/getuser", authUser, async (req, res) => {
   //first middleware will run then async(req,res)
   try {
     userId = req.existUser.id;
     const userdata = await UserSchema.findById(userId).select("-password");
-    res.json(userdata);
+    res.status(200).json(userdata);
   } catch (error) {
-    res.send(error);
+    res.json(error);
   }
 });
 
@@ -128,7 +126,7 @@ router.get("/allusers", authUser, async (req, res) => {
 
     const filteredUsers = allUsers.filter(user => user._id.toString() !== userId);
 
-    res.status(200).send(filteredUsers);
+    res.status(200).json(filteredUsers);
   } catch (error) {
     res.json(error);
   }
