@@ -28,8 +28,8 @@ router.post(
   "/addtask",
   authUser,
   [
-    body("title", "min length is 2").isLength({ min: 2 }),
-    body("description", "atleast 5 characters").isLength({ min: 5 }),
+    body("title", "min length is 2").isLength({ min: 2 }).escape(),
+    body("description", "at least 5 characters").isLength({ min: 5 }).escape(),
   ],
   async (req, res) => {
     try {
@@ -60,8 +60,8 @@ router.put(
   "/edittask/:id",
   authUser,
   [
-    body("title", "min length is 2").isLength({ min: 2 }),
-    body("description", "atleast 5 characters").isLength({ min: 5 }),
+    body("title", "min length is 2").isLength({ min: 2 }).escape(),
+    body("description", "at least 5 characters").isLength({ min: 5 }).escape(),
   ],
   async (req, res) => {
     try {
@@ -148,7 +148,7 @@ router.get("/allassignees/:id", authUser, async (req, res) => {
 router.post(
   "/addassignee/:id",
   authUser,
-  [body("email", "should be email").isEmail()],
+  [body("email", "should be email").isEmail().normalizeEmail()],
   async (req, res) => {
     try {
       const { email } = req.body;

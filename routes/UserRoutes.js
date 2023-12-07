@@ -14,9 +14,9 @@ const UserSchema = require("../models/Users");
 router.post(
   "/register",
   [
-    body("email", "Enter a valid email").isEmail(),
-    body("name", "min length is 3").isLength({ min: 3 }),
-    body("password", "atleast 5 characters").isLength({ min: 6 }),
+    body("email", "Enter a valid email").isEmail().normalizeEmail(),
+    body("name", "min length is 3").isLength({ min: 3 }).escape(),
+    body("password", "at least 5 characters").isLength({ min: 5 }).escape(),
   ],
   async (req, res) => {
     try {
@@ -66,8 +66,8 @@ router.post(
 router.post(
   "/login",
   [
-    body("email", "Enter a valid email").isEmail(),
-    body("password", "password cannot be empty").isLength({ min: 6 }),
+    body("email", "Enter a valid email").isEmail().normalizeEmail(),
+    body("password", "password cannot be empty").isLength({ min: 6 }).escape(),
   ],
   async (req, res) => {
     let success=false;
